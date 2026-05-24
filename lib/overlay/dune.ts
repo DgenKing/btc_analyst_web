@@ -49,7 +49,13 @@ export async function fetchDuneEtfFlows() {
     const data = await response.json();
     const rows: DuneRow[] = data?.result?.rows ?? [];
     if (rows.length === 0) {
-      return { status: 'unavailable', error: 'Dune returned no rows' };
+      // Capture diagnostic info — top-level keys + first 200 chars of the body
+      const topKeys = Object.keys(data ?? {}).join(',');
+      const bodyPreview = JSON.stringify(data).slice(0, 300);
+      return {
+        status: 'unavailable',
+        error: `Dune returned no rows. topKeys=[${topKeys}] body=${bodyPreview}`,
+      };
     }
 
     // Aggregate per-day net flow across all issuers/ETFs
