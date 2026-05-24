@@ -10,12 +10,39 @@ import { getMultiTimeframeSignals } from '@/lib/signals/multiTimeframe';
 import { getVolumeProfileSignals } from '@/lib/signals/volumeProfile';
 import { getSetupSignals } from '@/lib/signals/setups';
 import { getEntryFilterSignals } from '@/lib/signals/entryFilters';
-import { getOverlayData } from '@/lib/overlay';
 import { getOverlaySignals } from '@/lib/signals/overlay';
 
 export const revalidate = 60; // 60 seconds edge cache
 
-export async function GET() {
+// Fetch overlay through the dedicated /api/_overlay route — it's cached at the
+// Vercel edge layer with a 12h revalidate, so this fetch is served from CDN
+// even when /api/snapshot is hit hundreds of times per day. This is the only
+// thing that reliably enforces the upstream call budget across instances.
+async function getOverlayViaCachedRoute(request: Request) {
+  try {
+    const overlayUrl = new URL('/api/_overlay', request.url);
+    const resp = await fetch(overlayUrl.toString(), {
+      next: { revalidate: 43200 },
+    });
+    if (!resp.ok) {
+      return {
+        etfFlows: { status: 'unavailable', error: `_overlay ${resp.status}` },
+        reserveRisk: { status: 'unavailable', error: `_overlay ${resp.status}` },
+        puellMultiple: { status: 'unavailable', error: `_overlay ${resp.status}` },
+      };
+    }
+    return await resp.json();
+  } catch (e) {
+    const error = e instanceof Error ? e.message : 'Unknown';
+    return {
+      etfFlows: { status: 'unavailable', error },
+      reserveRisk: { status: 'unavailable', error },
+      puellMultiple: { status: 'unavailable', error },
+    };
+  }
+}
+
+export async function GET(request: Request) {
   try {
     const [klinesD, klinesW, klines4H, klines1H, perpTicker, overlayData] = await Promise.all([
       getKlines('BTCUSDT', 'D', 200),
@@ -23,7 +50,7 @@ export async function GET() {
       getKlines('BTCUSDT', '240', 200),
       getKlines('BTCUSDT', '60', 200),
       getCurrentFundingAndOI('BTCUSDT'),
-      getOverlayData(),
+      getOverlayViaCachedRoute(request),
     ]);
 
     const maSignals = getMASignals(klinesD);

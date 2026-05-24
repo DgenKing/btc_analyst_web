@@ -1,46 +1,78 @@
-import { unstable_cache } from 'next/cache';
 import { fetchDuneEtfFlows } from './dune';
 import { fetchReserveRisk, fetchPuellMultiple } from './bitcoinData';
 
 /**
- * Per-source caches with 12h TTL.
+ * Defense-in-depth caching for the overlay sources. Three independent layers
+ * so even if Vercel's caching layers fail, we never exceed the daily budget.
  *
- * IMPORTANT: each source is cached independently so a failure in one (e.g.
- * a rate-limit or transient 5xx) doesn't poison the cached results of the
- * others. Previously they were grouped under a single cache key — one bad
- * fetch silently held all three back for 12 hours.
+ *   Layer 1 (in this file): hard per-instance rate limiter — refuses to call
+ *                           upstream more than MAX_CALLS_PER_DAY in any 24h
+ *                           rolling window, returns last-known-good if hit.
+ *   Layer 2 (in this file): module-level cache with 12h TTL — caches results
+ *                           within a single function instance.
+ *   Layer 3 (route-level):  /api/_overlay route has `export const revalidate
+ *                           = 43200`, so Vercel's edge cache shares results
+ *                           across all instances and regions.
  *
- * Bumping the version suffix (e.g. v2 -> v3) invalidates the cache.
- *
- * Cost ceiling per source: 2 calls/24h regardless of dashboard traffic.
- *   - Dune: 2 × ~22 credits/call ≈ 44/day = ~1,320/month (cap 2,500)
- *   - bitcoin-data.com: 2 calls per endpoint per day = 4/day (cap 15/day)
+ * Previous attempts to use `unstable_cache` proved unreliable on Vercel Hobby
+ * — each cold function instance had its own cache namespace, leading to many
+ * upstream calls per day when instances were spun up by traffic.
  */
-const TTL = 43200; // 12h
 
-const cachedDuneEtfFlows = unstable_cache(
-  fetchDuneEtfFlows,
-  ['overlay-etf-v2'],
-  { revalidate: TTL, tags: ['overlay', 'overlay-etf'] },
-);
+const TTL_MS = 12 * 60 * 60 * 1000;       // 12 hours
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;   // 24 hours
+const MAX_CALLS_PER_DAY = 3;              // hard ceiling per instance (2 expected + 1 buffer)
 
-const cachedReserveRisk = unstable_cache(
-  fetchReserveRisk,
-  ['overlay-reserve-risk-v2'],
-  { revalidate: TTL, tags: ['overlay', 'overlay-reserve-risk'] },
-);
+interface OverlayData {
+  etfFlows: Awaited<ReturnType<typeof fetchDuneEtfFlows>>;
+  reserveRisk: Awaited<ReturnType<typeof fetchReserveRisk>>;
+  puellMultiple: Awaited<ReturnType<typeof fetchPuellMultiple>>;
+}
 
-const cachedPuellMultiple = unstable_cache(
-  fetchPuellMultiple,
-  ['overlay-puell-v2'],
-  { revalidate: TTL, tags: ['overlay', 'overlay-puell'] },
-);
+declare global {
+  // eslint-disable-next-line no-var
+  var __btcAnalyst_overlayCache: { fetchedAt: number; data: OverlayData } | undefined;
+  // eslint-disable-next-line no-var
+  var __btcAnalyst_overlayCallLog: number[] | undefined;
+}
 
-export async function getOverlayData() {
+async function fetchOverlayDataRaw(): Promise<OverlayData> {
   const [etfFlows, reserveRisk, puellMultiple] = await Promise.all([
-    cachedDuneEtfFlows(),
-    cachedReserveRisk(),
-    cachedPuellMultiple(),
+    fetchDuneEtfFlows(),
+    fetchReserveRisk(),
+    fetchPuellMultiple(),
   ]);
   return { etfFlows, reserveRisk, puellMultiple };
+}
+
+export async function getOverlayData(): Promise<OverlayData> {
+  const now = Date.now();
+  const cache = globalThis.__btcAnalyst_overlayCache;
+
+  // --- Layer 2: TTL cache hit? Return immediately, no upstream call ---
+  if (cache && now - cache.fetchedAt < TTL_MS) {
+    return cache.data;
+  }
+
+  // --- Layer 1: Rate limiter — count upstream calls in the last 24h ---
+  globalThis.__btcAnalyst_overlayCallLog ??= [];
+  globalThis.__btcAnalyst_overlayCallLog = globalThis.__btcAnalyst_overlayCallLog.filter(
+    (t) => now - t < ONE_DAY_MS,
+  );
+
+  if (globalThis.__btcAnalyst_overlayCallLog.length >= MAX_CALLS_PER_DAY) {
+    // Hard refuse. Return whatever we have cached, no matter how old.
+    if (cache) return cache.data;
+    return {
+      etfFlows: { status: 'unavailable', error: 'rate-limited (24h cap reached)' },
+      reserveRisk: { status: 'unavailable', error: 'rate-limited (24h cap reached)' },
+      puellMultiple: { status: 'unavailable', error: 'rate-limited (24h cap reached)' },
+    };
+  }
+
+  // Approved — record the call and fetch
+  globalThis.__btcAnalyst_overlayCallLog.push(now);
+  const data = await fetchOverlayDataRaw();
+  globalThis.__btcAnalyst_overlayCache = { fetchedAt: now, data };
+  return data;
 }
