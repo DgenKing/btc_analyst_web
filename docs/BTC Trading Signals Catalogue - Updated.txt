@@ -1,0 +1,631 @@
+Below is a **webpage-ready signal catalogue** extracted from your BTC Swing Trading Framework. I’ve split them into sections so you can build one large “BTC Trading Signals Dashboard” page from them. The framework is based on confluence: no single signal should be treated as enough by itself. 
+
+---
+
+# BTC Swing Trading Signals Catalogue
+
+## 1. Market Context Signals
+
+| Signal                         |                Bias | Meaning                                                                     |
+| ------------------------------ | ------------------: | --------------------------------------------------------------------------- |
+| **BTC trending up**            |             Bullish | Higher timeframe trend supports long setups.                                |
+| **BTC trending down**          |             Bearish | Higher timeframe trend supports short setups or caution on longs.           |
+| **BTC ranging**                |             Neutral | Focus shifts to range support, range resistance, acceptance, and rejection. |
+| **Bull market structure**      |             Bullish | Higher timeframe market supports upside continuation.                       |
+| **Bear market structure**      |             Bearish | Higher timeframe market supports downside continuation.                     |
+| **Major support nearby**       | Bullish / defensive | Price is approaching an important reaction zone.                            |
+| **Major resistance nearby**    | Bearish / defensive | Price is approaching an important rejection zone.                           |
+| **Long-term structure intact** |             Bullish | Larger trend remains valid.                                                 |
+| **Long-term structure broken** |             Bearish | Larger trend may be weakening.                                              |
+
+---
+
+## 2. Multi-Timeframe Signals
+
+## Monthly / Weekly Signals
+
+| Signal                                |    Bias | Meaning                                               |
+| ------------------------------------- | ------: | ----------------------------------------------------- |
+| **Macro uptrend**                     | Bullish | Higher timeframe trend favours longs.                 |
+| **Macro downtrend**                   | Bearish | Higher timeframe trend favours shorts.                |
+| **Macro range**                       | Neutral | Trade range boundaries rather than chasing direction. |
+| **Major weekly support holding**      | Bullish | Larger buyers may be defending the level.             |
+| **Major weekly resistance rejecting** | Bearish | Larger sellers may be defending the level.            |
+
+## Daily / 3-Day Signals
+
+| Signal                               |              Bias | Meaning                                     |
+| ------------------------------------ | ----------------: | ------------------------------------------- |
+| **Daily bullish structure**          |           Bullish | Swing direction favours longs.              |
+| **Daily bearish structure**          |           Bearish | Swing direction favours shorts.             |
+| **Daily range support holding**      |           Bullish | Price is respecting lower range boundary.   |
+| **Daily range resistance rejecting** |           Bearish | Price is respecting upper range boundary.   |
+| **Daily breakout**                   | Bullish / bearish | Price is leaving a range or structure zone. |
+| **Daily breakdown**                  |           Bearish | Price has lost key support.                 |
+| **Important liquidity zone nearby**  |             Watch | Possible sweep, reaction, or reversal area. |
+
+## 4H / 8H / 12H Signals
+
+| Signal                                |              Bias | Meaning                                                       |
+| ------------------------------------- | ----------------: | ------------------------------------------------------------- |
+| **Support holding on 4H/8H/12H**      |           Bullish | Trade setup may be confirming.                                |
+| **Resistance rejecting on 4H/8H/12H** |           Bearish | Short setup may be confirming.                                |
+| **Momentum aligned with setup**       | Bullish / bearish | Lower timeframe confirms higher timeframe idea.               |
+| **Breakout confirmed**                |           Bullish | Price has broken and held above a key level.                  |
+| **Breakdown confirmed**               |           Bearish | Price has broken and held below a key level.                  |
+| **Structure confirmation**            | Bullish / bearish | Market is behaving in line with the intended trade direction. |
+
+## 1H Entry Signals
+
+| Signal                   |             Bias | Meaning                                        |
+| ------------------------ | ---------------: | ---------------------------------------------- |
+| **Tight risk available** |     Entry filter | Stop-loss can be placed close to invalidation. |
+| **1H confirmation**      |     Entry filter | Lower timeframe agrees with trade direction.   |
+| **Liquidity sweep**      | Reversal / entry | Price grabs liquidity then reclaims structure. |
+| **Structure reclaim**    |          Bullish | Price loses then recovers an important level.  |
+| **Failed reclaim**       |          Bearish | Price tries to recover a level but fails.      |
+
+---
+
+
+## 3. Fundamental, On-Chain & Derivatives Bias Overlay
+
+This is a **bias overlay**, not an entry system.
+
+The technical framework still decides the trade. The overlay only adjusts confidence, caution, and position quality.
+
+## Core Overlay Rule
+
+| Rule | Meaning |
+| --- | --- |
+| **TA decides the trade** | Support/resistance, volume profile, structure, confirmation, and invalidation come first. |
+| **Overlay adjusts confidence** | ETF flows, funding, Reserve Risk, and Puell Multiple can strengthen or weaken the bias. |
+| **No standalone trades** | Never enter only because an ETF/on-chain/funding signal is bullish or bearish. |
+| **Conflict means caution** | If TA is bullish but the overlay is hostile, reduce size or wait for cleaner confirmation. |
+| **Agreement means confidence** | If TA and the overlay agree, the setup quality improves. |
+
+---
+
+## ETF Flow Signals
+
+| Signal | Bias | Meaning |
+| --- | ---: | --- |
+| **Strong ETF net inflows** | Bullish | Institutional demand is supporting BTC. |
+| **Several days of ETF net inflows** | Bullish | Sustained institutional demand may support weekly bias. |
+| **ETF inflows while BTC holds support** | Bullish confluence | Demand is appearing at an important technical level. |
+| **ETF inflows while BTC reclaims structure** | Bullish confluence | Institutional demand supports the reclaim. |
+| **ETF inflows during acceptance above range** | Bullish | Flow supports continuation into the higher range. |
+| **Strong ETF net outflows** | Bearish / caution | Institutional demand is weakening or selling pressure is rising. |
+| **Several days of ETF net outflows** | Bearish | Weekly bias weakens if price is also losing structure. |
+| **ETF outflows while BTC rejects resistance** | Bearish confluence | Flow confirms the technical rejection. |
+| **ETF outflows while BTC loses support** | Bearish confluence | Flow confirms technical weakness. |
+| **ETF outflows during failed breakout** | Bearish | Breakout quality weakens. |
+
+---
+
+## Funding Rate Signals
+
+| Signal | Bias | Meaning |
+| --- | ---: | --- |
+| **Neutral funding** | Healthy | The market is not overly crowded. |
+| **Neutral funding with bullish structure** | Bullish | Trend is healthier because leverage is not excessive. |
+| **Negative funding at major support** | Bullish contrarian | Shorts may be crowded near a possible reversal area. |
+| **Negative funding after liquidity sweep** | Bullish contrarian | Short squeeze risk increases if price reclaims structure. |
+| **Funding reset after flush** | Bullish / neutral | Excess leverage may have been cleared. |
+| **Extremely positive funding** | Bearish / caution | Longs may be overcrowded; flush risk rises. |
+| **Positive funding into resistance** | Bearish caution | Longs are paying while price approaches a sell zone. |
+| **Positive funding while BTC fails to reclaim** | Bearish | Crowded longs are failing to regain structure. |
+| **Negative funding during breakdown** | Bearish continuation | Shorts are in control if price keeps losing support. |
+
+---
+
+## Reserve Risk Signals
+
+| Signal | Bias | Meaning |
+| --- | ---: | --- |
+| **Low Reserve Risk** | Macro bullish | Long-term holder confidence is strong relative to price. |
+| **Reserve Risk rising from low levels** | Bullish | Macro conditions may be improving. |
+| **Low Reserve Risk with weekly support holding** | Bullish confluence | Macro value aligns with technical support. |
+| **Low Reserve Risk with improving structure** | Bullish | Macro and market structure are improving together. |
+| **High Reserve Risk** | Caution | Price may be high relative to long-term holder confidence. |
+| **Reserve Risk overheated** | Bearish caution | Late-cycle or overheated conditions may be developing. |
+| **High Reserve Risk with major resistance rejection** | Bearish confluence | Macro caution confirms technical rejection. |
+| **High Reserve Risk with weak structure** | Bearish | Macro and TA are both deteriorating. |
+
+---
+
+## Puell Multiple Signals
+
+| Signal | Bias | Meaning |
+| --- | ---: | --- |
+| **Low Puell Multiple** | Macro bullish / value | Miner revenue is depressed relative to normal conditions. |
+| **Puell Multiple rising from low levels** | Bullish | Miner stress may be reducing as cycle strength improves. |
+| **Low Puell Multiple with major support holding** | Bullish confluence | Macro value aligns with technical support. |
+| **Miner stress reducing with improving structure** | Bullish | Miner conditions and TA are improving together. |
+| **High Puell Multiple** | Caution | Miner revenue is elevated; sell pressure risk may rise. |
+| **Very high Puell Multiple with euphoria** | Bearish caution | Market may be overheated. |
+| **High Puell Multiple with resistance rejection** | Bearish confluence | Cycle caution confirms technical rejection. |
+| **Elevated miner profitability with weak structure** | Bearish | Macro risk and TA weakness align. |
+
+---
+
+## Overlay Confluence Signals
+
+| Signal Cluster | Bias | Meaning |
+| --- | ---: | --- |
+| **Support holding + ETF inflows** | Bullish | Institutional demand supports a technical support zone. |
+| **Structure reclaim + neutral funding** | Bullish | Price reclaims structure without excessive leverage. |
+| **Liquidity sweep + negative funding + reclaim** | Bullish squeeze | Shorts may be trapped after price reclaims. |
+| **Range breakout + ETF inflows + neutral funding** | Bullish | Breakout quality improves. |
+| **Resistance rejection + ETF outflows** | Bearish | Technical rejection is supported by flow weakness. |
+| **Failed reclaim + positive funding** | Bearish | Crowded longs are failing to regain structure. |
+| **Breakdown + ETF outflows + weak momentum** | Bearish | Technical and flow weakness align. |
+| **Major resistance + overheated Reserve Risk/Puell** | Bearish caution | Macro/cycle risk supports caution at resistance. |
+
+---
+
+## Overlay Risk Rules
+
+| Signal | Action |
+| --- | --- |
+| **TA strong + overlay supportive** | Normal confidence, trade only with confirmation. |
+| **TA strong + overlay hostile** | Reduce size or wait. |
+| **TA weak + overlay supportive** | No trade. Wait for technical setup. |
+| **TA bearish + overlay bearish** | Short bias improves if confirmation exists. |
+| **Funding extremely positive** | Avoid chasing longs. |
+| **Funding extremely negative at support** | Watch for short squeeze reclaim. |
+| **ETF outflows into support** | Be careful with longs. |
+| **ETF inflows into resistance** | Still wait for breakout/acceptance. |
+
+---
+
+## Page Label
+
+**BTC Overlay = ETF Flows + Funding Rates + Reserve Risk + Puell Multiple**
+
+**Use it to adjust weekly bias, not to enter trades blindly.**
+
+---
+
+## 4. Support & Resistance Signals
+
+## Horizontal Level Signals
+
+| Signal                             |    Bias | Meaning                                                        |
+| ---------------------------------- | ------: | -------------------------------------------------------------- |
+| **Horizontal support**             | Bullish | Stronger than diagonal support. Key long area.                 |
+| **Horizontal resistance**          | Bearish | Stronger than diagonal resistance. Key short/take-profit area. |
+| **Repeated defended support**      | Bullish | Buyers have repeatedly stepped in.                             |
+| **Repeated defended resistance**   | Bearish | Sellers have repeatedly stepped in.                            |
+| **Historical reaction level**      |   Watch | Price has reacted here before.                                 |
+| **Market memory level**            |   Watch | Old important level may matter again.                          |
+| **Liquidity concentration level**  |   Watch | Area where stops/orders may cluster.                           |
+| **Institutional interest zone**    |   Watch | Possible high-value reaction area.                             |
+| **Old resistance becomes support** | Bullish | Breakout retest holds.                                         |
+| **Old support becomes resistance** | Bearish | Breakdown retest rejects.                                      |
+
+---
+
+## 5. Volume Profile Signals
+
+## HVN Signals
+
+| Signal                          |                   Bias | Meaning                                        |
+| ------------------------------- | ---------------------: | ---------------------------------------------- |
+| **High Volume Node support**    |                Bullish | HVN acts as support after price returns to it. |
+| **High Volume Node resistance** |                Bearish | HVN acts as resistance from below.             |
+| **HVN reaction**                |                  Watch | Price may slow, reverse, or consolidate.       |
+| **HVN reaccumulation zone**     |                Bullish | Market may be building a base.                 |
+| **HVN distribution zone**       |                Bearish | Market may be preparing for downside.          |
+| **Price accepted at HVN**       | Neutral / continuation | Market accepts fair value around the node.     |
+| **Price rejected from HVN**     |      Bullish / bearish | Rejection suggests failed acceptance.          |
+
+## POC Signals
+
+| Signal                     |                   Bias | Meaning                                     |
+| -------------------------- | ---------------------: | ------------------------------------------- |
+| **POC support**            |                Bullish | Price reacts from highest-volume area.      |
+| **POC resistance**         |                Bearish | Price rejects from highest-volume area.     |
+| **POC reclaim**            |                Bullish | Price recovers the key volume level.        |
+| **POC failure**            |                Bearish | Price fails to regain the key volume level. |
+| **POC acceptance**         | Neutral / continuation | Price is accepted around fair value.        |
+| **Strong reaction at POC** |                  Watch | Possible major decision point.              |
+
+## Value Area Signals
+
+| Signal                             |    Bias | Meaning                                  |
+| ---------------------------------- | ------: | ---------------------------------------- |
+| **Acceptance inside value area**   | Neutral | Market is balanced.                      |
+| **Acceptance above value area**    | Bullish | Buyers are accepting higher prices.      |
+| **Acceptance below value area**    | Bearish | Sellers are accepting lower prices.      |
+| **Rejection from value area high** | Bearish | Price fails at upper value boundary.     |
+| **Reclaim of value area low**      | Bullish | Price recovers back into accepted range. |
+
+---
+
+## 6. Trendline Signals
+
+## Horizontal Trendline Signals
+
+| Signal                              |    Bias | Meaning                                |
+| ----------------------------------- | ------: | -------------------------------------- |
+| **Horizontal trendline support**    | Bullish | High-weight support signal.            |
+| **Horizontal trendline resistance** | Bearish | High-weight resistance signal.         |
+| **Horizontal breakout**             | Bullish | Price clears a major objective level.  |
+| **Horizontal breakdown**            | Bearish | Price loses a major objective level.   |
+| **Horizontal retest holds**         | Bullish | Breakout has confirmed as support.     |
+| **Horizontal retest rejects**       | Bearish | Breakdown has confirmed as resistance. |
+
+## Diagonal Trendline Signals
+
+| Signal                           |            Bias | Meaning                                         |
+| -------------------------------- | --------------: | ----------------------------------------------- |
+| **Diagonal trendline support**   | Bullish, weaker | Can support a long only with other confluence.  |
+| **Diagonal trendline rejection** | Bearish, weaker | Can support a short only with other confluence. |
+| **Trend channel support**        |         Bullish | Price reacts from lower channel boundary.       |
+| **Trend channel resistance**     |         Bearish | Price reacts from upper channel boundary.       |
+| **Compression pattern**          |           Watch | Price is tightening before possible expansion.  |
+| **Diagonal breakout**            |         Bullish | Momentum may be shifting upward.                |
+| **Diagonal breakdown**           |         Bearish | Momentum may be shifting downward.              |
+
+**Important rule:** diagonal trendlines are weaker than horizontal levels and should not be used alone.
+
+---
+
+## 7. Moving Average Signals
+
+The framework uses the **20 MA, 50 MA, 100 MA, and 200 MA** as context, dynamic support/resistance, and trend confirmation, not as standalone entry signals. 
+
+| Signal                            |            Bias | Meaning                               |
+| --------------------------------- | --------------: | ------------------------------------- |
+| **20 MA support**                 |         Bullish | Short-term momentum is holding.       |
+| **20 MA rejection**               |         Bearish | Short-term momentum is weak.          |
+| **50 MA support**                 |         Bullish | Medium-term trend is holding.         |
+| **50 MA rejection**               |         Bearish | Medium-term trend is weak.            |
+| **100 MA support**                |         Bullish | Intermediate structure is holding.    |
+| **100 MA rejection**              |         Bearish | Intermediate structure is weak.       |
+| **200 MA support**                |         Bullish | Major macro trend level is holding.   |
+| **200 MA rejection**              |         Bearish | Major macro trend level is rejecting. |
+| **Price above key MAs**           | Bullish context | Trend structure is healthier.         |
+| **Price below key MAs**           | Bearish context | Trend structure is weaker.            |
+| **MA confluence with support**    |  Strong bullish | Dynamic and static support align.     |
+| **MA confluence with resistance** |  Strong bearish | Dynamic and static resistance align.  |
+
+---
+
+## 8. Range Trading Signals
+
+| Signal                             |               Bias | Meaning                                  |
+| ---------------------------------- | -----------------: | ---------------------------------------- |
+| **Inside active range**            |            Neutral | Avoid chasing; trade boundaries.         |
+| **Range support holding**          |            Bullish | Lower range boundary is defended.        |
+| **Range resistance rejecting**     |            Bearish | Upper range boundary is defended.        |
+| **Break above range high**         |            Bullish | Possible move into next higher range.    |
+| **Break below range low**          |            Bearish | Possible move into lower range.          |
+| **Breakout holds above range**     |            Bullish | New higher range becomes active.         |
+| **Breakdown holds below range**    |            Bearish | New lower range becomes active.          |
+| **Failure back into old range**    | Bearish / weakness | Breakout failed.                         |
+| **Old resistance becomes support** |            Bullish | Range transition confirmed.              |
+| **Acceptance above range**         |            Bullish | Buyers accepting higher prices.          |
+| **Acceptance below range**         |            Bearish | Sellers accepting lower prices.          |
+| **Range-to-range expansion**       |        Directional | Price moves from one range into another. |
+
+---
+
+## 9. Acceptance Signals
+
+| Signal                          |    Bias | Meaning                                  |
+| ------------------------------- | ------: | ---------------------------------------- |
+| **Holding support**             | Bullish | Buyers defending the level.              |
+| **Strong reclaim**              | Bullish | Price regains lost structure.            |
+| **Volume building above range** | Bullish | Acceptance forming above previous area.  |
+| **Acceptance above key level**  | Bullish | Market accepts higher prices.            |
+| **Acceptance above range high** | Bullish | Continuation higher becomes possible.    |
+| **Acceptance above POC/HVN**    | Bullish | Price accepts above major volume area.   |
+| **Acceptance inside range**     | Neutral | Market is balanced, not yet directional. |
+
+---
+
+## 10. Rejection Signals
+
+| Signal                                |               Bias | Meaning                             |
+| ------------------------------------- | -----------------: | ----------------------------------- |
+| **Rejection at resistance**           |            Bearish | Sellers defend the level.           |
+| **Failure reclaim**                   |            Bearish | Price cannot regain lost structure. |
+| **Breakdown below support**           |            Bearish | Key level has failed.               |
+| **Weak momentum**                     |            Bearish | Buyers are not strong enough.       |
+| **Rejection from HVN**                | Bearish / reversal | High-volume area rejects price.     |
+| **Rejection from POC**                | Bearish / reversal | Fair-value level rejects price.     |
+| **Rejection from diagonal trendline** |    Bearish, weaker | Useful only with other confluence.  |
+| **Rejection from 200 MA**             |            Bearish | Major macro resistance.             |
+
+---
+
+## 11. Bullish Long Setup Signals
+
+A long setup in the framework normally needs several of these at the same time. 
+
+| Signal                               |            Strength |
+| ------------------------------------ | ------------------: |
+| **Support holding**                  |              Strong |
+| **Range support holding**            |              Strong |
+| **HVN support**                      |              Strong |
+| **POC support**                      |              Strong |
+| **Trendline support**                |              Medium |
+| **Higher timeframe bullish bias**    |              Strong |
+| **Structure reclaim**                |              Strong |
+| **Momentum confirmation**            |              Strong |
+| **Previous breakout retest holding** |              Strong |
+| **200 MA confluence**                |              Strong |
+| **Old resistance becoming support**  |              Strong |
+| **Volume building above range**      |              Strong |
+| **Acceptance above key level**       |              Strong |
+| **Liquidity sweep then reclaim**     | Strong entry signal |
+| **Tight invalidation available**     |    Execution filter |
+| **ETF/funding/on-chain overlay supportive or neutral** | Bias filter |
+
+## Page Label
+
+**High-Probability Long Setup = Support + Volume Profile + Higher Timeframe Bias + Reclaim + Momentum + Defined Risk + Supportive BTC Overlay**
+
+---
+
+## 12. Bearish Short Setup Signals
+
+| Signal                                 |         Strength |
+| -------------------------------------- | ---------------: |
+| **Resistance rejection**               |           Strong |
+| **Breakdown below support**            |           Strong |
+| **Failure reclaim**                    |           Strong |
+| **Weak momentum**                      |           Strong |
+| **Bearish higher timeframe structure** |           Strong |
+| **Rejection from HVN**                 |           Strong |
+| **Rejection from POC**                 |           Strong |
+| **Trendline rejection**                |           Medium |
+| **Old support becoming resistance**    |           Strong |
+| **Failure back into old range**        |           Strong |
+| **Acceptance below key level**         |           Strong |
+| **Breakdown confirmed on 4H/8H/12H**   |           Strong |
+| **Tight invalidation available**       | Execution filter |
+| **ETF/funding/on-chain overlay hostile or cautionary** | Bias filter |
+
+## Page Label
+
+**High-Probability Short Setup = Resistance + Failed Reclaim + Volume Rejection + Bearish Structure + Weak Momentum + Defined Risk + Cautionary BTC Overlay**
+
+---
+
+## 13. Confluence Signals
+
+These are not individual signals. They are **signal clusters**.
+
+| Signal Cluster                                           |    Bias | Meaning                                   |
+| -------------------------------------------------------- | ------: | ----------------------------------------- |
+| **Horizontal support + HVN + POC**                       | Bullish | Strong support confluence.                |
+| **Horizontal resistance + HVN + POC**                    | Bearish | Strong resistance confluence.             |
+| **Daily trendline + horizontal support**                 | Bullish | Trend and structure align.                |
+| **200 MA + previous breakout retest**                    | Bullish | Macro support and structure retest align. |
+| **Range support + POC + reclaim**                        | Bullish | Good long setup area.                     |
+| **Range resistance + POC + rejection**                   | Bearish | Good short setup area.                    |
+| **Higher timeframe bias + lower timeframe confirmation** |  Strong | Direction and entry timing align.         |
+| **Support holding + momentum confirmation**              | Bullish | Buyers defending with strength.           |
+| **Resistance rejection + weak momentum**                 | Bearish | Sellers defending while buyers weaken.    |
+| **Support holding + ETF inflows + neutral funding**       | Bullish | Technical support is backed by healthy BTC flow/derivatives context. |
+| **Resistance rejection + ETF outflows + overheated funding** | Bearish | Technical rejection is backed by weak BTC flow/derivatives context. |
+
+---
+
+## 14. Entry Filter Signals
+
+| Signal                                       | Meaning                                                      |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| **Can risk be kept tight?**                  | Entry is only valid if stop can be placed near invalidation. |
+| **Is there confirmation?**                   | Do not enter purely because price touched a level.           |
+| **Has liquidity been swept?**                | Better entry if price grabs stops then reclaims.             |
+| **Is price reclaiming structure?**           | Strong long confirmation.                                    |
+| **Is price failing to reclaim structure?**   | Strong short confirmation.                                   |
+| **Is momentum aligned?**                     | Trade direction should match momentum.                       |
+| **Is breakout confirmed?**                   | Avoid entering early fakeouts.                               |
+| **Is support/resistance reacting properly?** | Level must behave as expected.                               |
+
+---
+
+## 15. Exit / Management Signals
+
+| Signal                                | Action                               |
+| ------------------------------------- | ------------------------------------ |
+| **Structure remains valid**           | Hold trade.                          |
+| **Structure weakens**                 | Reduce or exit.                      |
+| **Invalidation level hit**            | Exit.                                |
+| **Market conditions weaken**          | Close or reduce.                     |
+| **Target resistance reached on long** | Take profit or reduce.               |
+| **Target support reached on short**   | Take profit or reduce.               |
+| **Weekend liquidity risk rising**     | Reduce exposure.                     |
+| **Fake move risk rising**             | Avoid or reduce trade.               |
+| **Confirmation fails**                | Do not enter or exit existing trade. |
+| **One good trade completed**          | Stop forcing more trades.            |
+
+---
+
+## 16. Weekend / Timing Signals
+
+| Signal                                   | Action                        |
+| ---------------------------------------- | ----------------------------- |
+| **Thursday/Friday weakening conditions** | Reduce or close exposure.     |
+| **Friday low-quality setup**             | Avoid forcing trade.          |
+| **Saturday market active**               | Observation only.             |
+| **Saturday emotional urge to trade**     | No trade.                     |
+| **Sunday 10 PM GMT liquidity returns**   | Begin analysis again.         |
+| **Post-weekend structure forming**       | Start looking for setups.     |
+| **Weekend fakeout risk**                 | Avoid unnecessary exposure.   |
+| **Lower liquidity**                      | Reduce confidence in signals. |
+| **Erratic price action**                 | Avoid leverage.               |
+
+---
+
+## 17. Risk Signals
+
+| Signal                               | Meaning       |
+| ------------------------------------ | ------------- |
+| **No defined invalidation**          | No trade.     |
+| **Risk cannot be kept tight**        | No trade.     |
+| **Setup lacks confluence**           | No trade.     |
+| **Emotional trade urge**             | No trade.     |
+| **Revenge trade urge**               | No trade.     |
+| **More than two trades in a week**   | Stop trading. |
+| **Leverage without high conviction** | No trade.     |
+| **Leverage without controlled risk** | No trade.     |
+| **Single signal only**               | Not enough.   |
+| **Market unclear**                   | Observe.      |
+| **Overlay conflicts with TA**        | Reduce size or wait. |
+| **Overlay is bullish but no TA setup exists** | No trade. |
+| **Overlay is bearish but no TA setup exists** | No trade. |
+
+---
+
+## 18. Complete Signal List — Simple Version for Webpage Cards
+
+## Bullish Signals 🟢
+
+* Support holding
+* Range support holding
+* Horizontal support reaction
+* HVN support
+* POC support
+* Value area reclaim
+* Strong reclaim
+* Structure reclaim
+* Liquidity sweep then reclaim
+* Momentum confirmation
+* Higher timeframe bullish bias
+* Daily bullish structure
+* Breakout confirmed
+* Break above range high
+* Breakout retest holding
+* Old resistance becomes support
+* Acceptance above key level
+* Acceptance above range
+* Volume building above range
+* 20 MA support
+* 50 MA support
+* 100 MA support
+* 200 MA support
+* Trendline support
+* Daily trendline support
+* Range-to-range expansion upward
+* Price accepted above HVN
+* Price accepted above POC
+* Bullish confluence cluster
+* Strong ETF net inflows
+* Consecutive ETF net inflows
+* ETF inflows while support holds
+* Neutral funding with bullish structure
+* Negative funding at support
+* Funding reset after flush
+* Low Reserve Risk
+* Low Puell Multiple
+* Supportive BTC overlay
+
+## Bearish Signals 🔴
+
+* Resistance rejection
+* Range resistance rejection
+* Horizontal resistance reaction
+* HVN rejection
+* POC rejection
+* Value area high rejection
+* Failure reclaim
+* Breakdown below support
+* Breakdown confirmed
+* Weak momentum
+* Higher timeframe bearish structure
+* Daily bearish structure
+* Break below range low
+* Failure back into old range
+* Old support becomes resistance
+* Acceptance below key level
+* Acceptance below range
+* 20 MA rejection
+* 50 MA rejection
+* 100 MA rejection
+* 200 MA rejection
+* Trendline rejection
+* Diagonal breakdown
+* Range-to-range expansion downward
+* Price rejected from HVN
+* Price rejected from POC
+* Bearish confluence cluster
+* Strong ETF net outflows
+* Consecutive ETF net outflows
+* ETF outflows while resistance rejects
+* Extremely positive funding
+* Positive funding into resistance
+* Failed reclaim with positive funding
+* High Reserve Risk
+* High Puell Multiple
+* Cautionary BTC overlay
+
+## Neutral / Watch Signals 🟡
+
+* BTC ranging
+* Inside active range
+* Price near major support
+* Price near major resistance
+* Price near liquidity zone
+* Price at HVN
+* Price at POC
+* Price inside value area
+* Compression pattern
+* Low liquidity weekend market
+* Erratic price action
+* No clear confirmation
+* Mixed timeframe signals
+* Single signal without confluence
+* Risk too wide
+* Market structure unclear
+* Mixed ETF flows
+* Neutral funding
+* Overlay conflicts with TA
+* On-chain data unclear
+* ETF inflows into resistance
+* ETF outflows into support
+
+---
+
+## 19. Best Webpage Structure
+
+Use this order:
+
+1. **Market Bias Signals**
+2. **Multi-Timeframe Signals**
+3. **Fundamental, On-Chain & Derivatives Overlay**
+4. **Support & Resistance Signals**
+5. **Volume Profile Signals**
+6. **Range Signals**
+7. **Trendline Signals**
+8. **Moving Average Signals**
+9. **Bullish Long Setup Signals**
+10. **Bearish Short Setup Signals**
+11. **Entry Confirmation Signals**
+12. **Exit & Risk Signals**
+13. **Weekend / No-Trade Signals**
+14. **Confluence Scorecard**
+
+A good scoring system would be:
+
+|                       Score | Meaning                      |
+| --------------------------: | ---------------------------- |
+|             **0–2 signals** | Weak setup                   |
+|             **3–4 signals** | Possible setup               |
+|             **5–6 signals** | Strong setup                 |
+|              **7+ signals** | High-confluence setup        |
+| **No defined invalidation** | No trade regardless of score |
+| **Overlay conflicts with TA** | Reduce size, lower confidence, or wait |
+| **Overlay agrees with TA** | Setup confidence improves, but confirmation still required |
+
+Final webpage principle:
+
+> **One signal is information. Multiple aligned signals create a trade setup.**
+
+> **The BTC overlay adjusts bias and confidence. It does not replace technical confirmation, invalidation, or risk management.**
+
