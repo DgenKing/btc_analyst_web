@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { SignalState } from '@/types/signals';
 import { computeMasterScorecard } from '@/lib/signals/confluence';
@@ -44,7 +43,34 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
               {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore}
             </span>
           </div>
-          <Progress value={scorePercentage} className="h-2 bg-red-500/20" />
+          <div className="relative pt-7 pb-4">
+            {/* Two-half solid gradient: dim near centre, vibrant at the edges */}
+            <div className="relative h-3 w-full overflow-hidden rounded-full flex shadow-inner">
+              <div className="flex-1 bg-gradient-to-l from-red-900 via-red-700 to-red-500" />
+              <div className="flex-1 bg-gradient-to-r from-green-900 via-green-700 to-green-500" />
+            </div>
+            {/* Centre divider tick (zero mark) */}
+            <div className="pointer-events-none absolute left-1/2 top-7 h-5 w-px -translate-x-1/2 bg-zinc-300/70" />
+            <div className="pointer-events-none absolute left-1/2 top-12 -translate-x-1/2 text-[8px] uppercase font-bold tracking-widest text-zinc-500">
+              0
+            </div>
+            {/* Live score position marker with floating value badge */}
+            <div
+              className="pointer-events-none absolute top-1 transition-all duration-500"
+              style={{ left: `${scorePercentage}%`, transform: 'translateX(-50%)' }}
+            >
+              <div
+                className={`mx-auto w-fit rounded px-1.5 py-0.5 text-[9px] font-black tabular-nums shadow-md ${
+                  scorecard.totalScore >= 0
+                    ? 'bg-green-500 text-black'
+                    : 'bg-red-500 text-white'
+                }`}
+              >
+                {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore}
+              </div>
+              <div className="mx-auto mt-1 h-5 w-1 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
+            </div>
+          </div>
           <div className="flex justify-between text-[10px] uppercase font-bold text-muted-foreground/60">
             <span>Strong Bearish (-100)</span>
             <span>Strong Bullish (+100)</span>
