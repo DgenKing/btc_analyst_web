@@ -26,8 +26,8 @@ export default function Home() {
   });
 
   const signalStates = useMemo(() => {
-    if (!snapshot) {
-      return signalSections.flatMap(section => 
+    if (!snapshot?.signals) {
+      return signalSections.flatMap(section =>
         section.signals.map(signal => ({
           id: signal.id,
           status: 'none' as const,
@@ -51,8 +51,8 @@ export default function Home() {
   }, [searchQuery]);
 
   const chartData = useMemo(() => {
-    if (!snapshot) return [];
-    return snapshot.klines[timeframe as keyof typeof snapshot.klines] || snapshot.klines.d;
+    if (!snapshot?.klines) return [];
+    return snapshot.klines[timeframe as keyof typeof snapshot.klines] || snapshot.klines.d || [];
   }, [snapshot, timeframe]);
 
   return (
