@@ -22,8 +22,9 @@ export function getOverlaySignals(overlayData: {
   if (etfFlows?.status === 'success' && typeof etfFlows.latestDayNetFlowUSD === 'number') {
     const netFlow = etfFlows.latestDayNetFlowUSD;
     const fetchedAt = etfFlows.fetchedAt ?? Date.now();
-    const isStrongIn = netFlow > 200_000_000;
-    const isStrongOut = netFlow < -200_000_000;
+    // Tuned for mature 2026 ETF market — typical day $50-200M, "strong" = top quartile
+    const isStrongIn = netFlow > 300_000_000;
+    const isStrongOut = netFlow < -300_000_000;
 
     signals.push({
       id: 'etf-inflows-strong',
@@ -71,7 +72,9 @@ export function getOverlaySignals(overlayData: {
   if (puellMultiple?.status === 'success' && typeof puellMultiple.puellMultiple === 'number') {
     const pm = puellMultiple.puellMultiple;
     const fetchedAt = puellMultiple.fetchedAt ?? Date.now();
-    const isLow = pm < 0.5;
+    // Historical context: <0.5 = capitulation, 0.5-1.0 = below average (still bullish),
+    // 1.0-2.0 = normal, >2.0 elevated. Relax from <0.5 (rarely hits) to <1.0 (meaningful).
+    const isLow = pm < 1.0;
     signals.push({
       id: 'puell-multiple-low',
       status: isLow ? 'green' : 'none',

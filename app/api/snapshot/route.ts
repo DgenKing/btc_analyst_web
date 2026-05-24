@@ -68,30 +68,6 @@ export async function GET() {
         current: parseFloat(perpTicker.openInterest),
       },
       signals,
-      _debug: {
-        overlay: {
-          etfFlows: {
-            status: overlayData?.etfFlows?.status,
-            error: overlayData?.etfFlows?.error,
-            hasNetFlow: typeof overlayData?.etfFlows?.latestDayNetFlowUSD === 'number',
-          },
-          reserveRisk: {
-            status: overlayData?.reserveRisk?.status,
-            error: overlayData?.reserveRisk?.error,
-            value: overlayData?.reserveRisk?.reserveRisk,
-          },
-          puellMultiple: {
-            status: overlayData?.puellMultiple?.status,
-            error: overlayData?.puellMultiple?.error,
-            value: overlayData?.puellMultiple?.puellMultiple,
-          },
-        },
-        env: {
-          hasDuneKey: !!process.env.DUNE_API_KEY,
-          hasDuneQueryId: !!process.env.DUNE_ETF_QUERY_ID,
-          duneQueryId: process.env.DUNE_ETF_QUERY_ID,
-        },
-      },
     };
 
     return NextResponse.json(snapshot);
