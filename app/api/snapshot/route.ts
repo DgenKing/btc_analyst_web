@@ -9,6 +9,7 @@ import { getRangeSignals } from '@/lib/signals/range';
 import { getMultiTimeframeSignals } from '@/lib/signals/multiTimeframe';
 import { getVolumeProfileSignals } from '@/lib/signals/volumeProfile';
 import { getSetupSignals } from '@/lib/signals/setups';
+import { getEntryFilterSignals } from '@/lib/signals/entryFilters';
 import { getOverlayData } from '@/lib/overlay';
 import { getOverlaySignals } from '@/lib/signals/overlay';
 
@@ -33,6 +34,7 @@ export async function GET() {
     const mtfSignals = getMultiTimeframeSignals(klinesD, klinesW);
     const volProfileSignals = getVolumeProfileSignals(klinesD);
     const setupSignals = getSetupSignals(klinesD, klines1H);
+    const entryFilterSignals = getEntryFilterSignals(klinesD, klines1H);
     const overlaySignals = getOverlaySignals(overlayData);
 
     // Combine all auto-detected signals
@@ -45,6 +47,7 @@ export async function GET() {
       ...mtfSignals,
       ...volProfileSignals,
       ...setupSignals,
+      ...entryFilterSignals,
       ...overlaySignals,
     ];
 
