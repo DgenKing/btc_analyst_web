@@ -49,12 +49,15 @@ export async function fetchDuneEtfFlows() {
     const data = await response.json();
     const rows: DuneRow[] = data?.result?.rows ?? [];
     if (rows.length === 0) {
-      // Capture diagnostic info — top-level keys + first 200 chars of the body
-      const topKeys = Object.keys(data ?? {}).join(',');
-      const bodyPreview = JSON.stringify(data).slice(0, 300);
+      // Surface the actual `result` block so we can see column names / row count
+      const resultKeys = Object.keys(data?.result ?? {}).join(',');
+      const rowsType = Array.isArray(data?.result?.rows)
+        ? `array(len=${data.result.rows.length})`
+        : typeof data?.result?.rows;
+      const resultPreview = JSON.stringify(data?.result ?? null).slice(0, 1200);
       return {
         status: 'unavailable',
-        error: `Dune returned no rows. topKeys=[${topKeys}] body=${bodyPreview}`,
+        error: `Dune no rows. resultKeys=[${resultKeys}] rowsType=${rowsType} result=${resultPreview}`,
       };
     }
 
