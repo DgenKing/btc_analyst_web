@@ -1,8 +1,9 @@
 import { SignalState } from '@/types/signals';
 
-interface OverlaySourceData {
+export interface OverlaySourceData {
   status: string;
-  fetchedAt: number;
+  fetchedAt?: number;
+  error?: string;
   latestDayNetFlowUSD?: number;
   isConsecutive?: boolean;
   reserveRisk?: number;
@@ -18,59 +19,66 @@ export function getOverlaySignals(overlayData: {
   const signals: SignalState[] = [];
 
   // ETF Flows
-  if (etfFlows?.status === 'success') {
+  if (etfFlows?.status === 'success' && typeof etfFlows.latestDayNetFlowUSD === 'number') {
     const netFlow = etfFlows.latestDayNetFlowUSD;
+    const fetchedAt = etfFlows.fetchedAt ?? Date.now();
+    const isStrongIn = netFlow > 200_000_000;
+    const isStrongOut = netFlow < -200_000_000;
+
     signals.push({
       id: 'etf-inflows-strong',
-      status: netFlow > 200_000_000 ? 'green' : 'none',
-      score: netFlow > 200_000_000 ? 5 : 0,
-      confluence: { passed: netFlow > 200_000_000 ? 1 : 0, total: 1 },
+      status: isStrongIn ? 'green' : 'none',
+      score: isStrongIn ? 5 : 0,
+      confluence: { passed: isStrongIn ? 1 : 0, total: 1 },
       value: `$${(netFlow / 1_000_000).toFixed(1)}M`,
-      fetchedAt: etfFlows.fetchedAt,
+      fetchedAt,
     });
-    
-    // Consecutive inflows (simplified logic for v1.5)
+
     signals.push({
       id: 'etf-inflows-consecutive',
       status: etfFlows.isConsecutive ? 'green' : 'none',
       score: etfFlows.isConsecutive ? 5 : 0,
       confluence: { passed: etfFlows.isConsecutive ? 1 : 0, total: 1 },
-      fetchedAt: etfFlows.fetchedAt,
+      fetchedAt,
     });
 
     signals.push({
       id: 'etf-outflows-strong',
-      status: netFlow < -200_000_000 ? 'red' : 'none',
-      score: netFlow < -200_000_000 ? -5 : 0,
-      confluence: { passed: netFlow < -200_000_000 ? 1 : 0, total: 1 },
+      status: isStrongOut ? 'red' : 'none',
+      score: isStrongOut ? -5 : 0,
+      confluence: { passed: isStrongOut ? 1 : 0, total: 1 },
       value: `$${(netFlow / 1_000_000).toFixed(1)}M`,
-      fetchedAt: etfFlows.fetchedAt,
+      fetchedAt,
     });
   }
 
   // Reserve Risk
-  if (reserveRisk?.status === 'success') {
+  if (reserveRisk?.status === 'success' && typeof reserveRisk.reserveRisk === 'number') {
     const rr = reserveRisk.reserveRisk;
+    const fetchedAt = reserveRisk.fetchedAt ?? Date.now();
+    const isLow = rr < 0.002;
     signals.push({
       id: 'reserve-risk-low',
-      status: rr < 0.002 ? 'green' : 'none',
-      score: rr < 0.002 ? 4 : 0,
-      confluence: { passed: rr < 0.002 ? 1 : 0, total: 1 },
+      status: isLow ? 'green' : 'none',
+      score: isLow ? 4 : 0,
+      confluence: { passed: isLow ? 1 : 0, total: 1 },
       value: rr.toFixed(6),
-      fetchedAt: reserveRisk.fetchedAt,
+      fetchedAt,
     });
   }
 
   // Puell Multiple
-  if (puellMultiple?.status === 'success') {
+  if (puellMultiple?.status === 'success' && typeof puellMultiple.puellMultiple === 'number') {
     const pm = puellMultiple.puellMultiple;
+    const fetchedAt = puellMultiple.fetchedAt ?? Date.now();
+    const isLow = pm < 0.5;
     signals.push({
       id: 'puell-multiple-low',
-      status: pm < 0.5 ? 'green' : 'none',
-      score: pm < 0.5 ? 3 : 0,
-      confluence: { passed: pm < 0.5 ? 1 : 0, total: 1 },
+      status: isLow ? 'green' : 'none',
+      score: isLow ? 3 : 0,
+      confluence: { passed: isLow ? 1 : 0, total: 1 },
       value: pm.toFixed(4),
-      fetchedAt: puellMultiple.fetchedAt,
+      fetchedAt,
     });
   }
 

@@ -12,6 +12,5 @@ export async function getOverlayData() {
     etfFlows,
     reserveRisk,
     puellMultiple,
-    fetchedAt: Date.now()
   };
 }

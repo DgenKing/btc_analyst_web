@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { createChart, ColorType, CandlestickSeries, IChartApi } from 'lightweight-charts';
+import { createChart, ColorType, CandlestickSeries, CandlestickData, Time, IChartApi } from 'lightweight-charts';
 import { Kline } from '@/types/signals';
 
 interface ChartProps {
@@ -57,7 +57,14 @@ export default function Chart({
       wickDownColor: '#ef4444',
     });
 
-    candleSeries.setData(data);
+    const seriesData: CandlestickData<Time>[] = data.map((k) => ({
+      time: k.time as Time,
+      open: k.open,
+      high: k.high,
+      low: k.low,
+      close: k.close,
+    }));
+    candleSeries.setData(seriesData);
 
     chart.timeScale().fitContent();
 
