@@ -17,57 +17,41 @@ export function getMASignals(klines: Kline[]): SignalState[] {
   const ma200 = calculateSMA(klines, 200);
 
   const lastClose = klines[klines.length - 1].close;
-  
-  const getStatus = (ma: { value: number }[] | null): 'green' | 'red' | 'none' => {
-    if (!ma) return 'none';
-    const lastMA = ma[ma.length - 1].value;
-    return lastClose > lastMA ? 'green' : 'red';
-  };
-
   const fetchedAt = Date.now();
 
-  const signals: SignalState[] = [
-    { 
-      id: 'ma20-support', 
-      status: getStatus(ma20), 
-      value: ma20?.[ma20.length - 1].value.toFixed(0),
-      score: getStatus(ma20) === 'green' ? 5 : 0,
-      confluence: { passed: getStatus(ma20) === 'green' ? 1 : 0, total: 1 },
-      fetchedAt
-    },
-    { 
-      id: 'ma50-support', 
-      status: getStatus(ma50), 
-      value: ma50?.[ma50.length - 1].value.toFixed(0),
-      score: getStatus(ma50) === 'green' ? 5 : 0,
-      confluence: { passed: getStatus(ma50) === 'green' ? 1 : 0, total: 1 },
-      fetchedAt
-    },
-    { 
-      id: 'ma100-support', 
-      status: getStatus(ma100), 
-      value: ma100?.[ma100.length - 1].value.toFixed(0),
-      score: getStatus(ma100) === 'green' ? 5 : 0,
-      confluence: { passed: getStatus(ma100) === 'green' ? 1 : 0, total: 1 },
-      fetchedAt
-    },
-    { 
-      id: 'ma200-support', 
-      status: getStatus(ma200), 
+  // A "support" signal is ACTIVE (green) only when price is above the MA.
+  // When price is below, the signal is INACTIVE (none, score 0) — the bearish
+  // case is conveyed by the separate ma200-rejection signal, not by a red dot
+  // on the support card.
+  const isAbove = (ma: { value: number }[] | null) =>
+    ma != null && lastClose > ma[ma.length - 1].value;
+
+  const mkSupport = (id: string, ma: { value: number }[] | null, weight: number): SignalState => {
+    const active = isAbove(ma);
+    return {
+      id,
+      status: active ? 'green' : 'none',
+      value: ma?.[ma.length - 1].value.toFixed(0),
+      score: active ? weight : 0,
+      confluence: { passed: active ? 1 : 0, total: 1 },
+      fetchedAt,
+    };
+  };
+
+  const ma200Below = ma200 != null && lastClose < ma200[ma200.length - 1].value;
+
+  return [
+    mkSupport('ma20-support', ma20, 5),
+    mkSupport('ma50-support', ma50, 5),
+    mkSupport('ma100-support', ma100, 5),
+    mkSupport('ma200-support', ma200, 10),
+    {
+      id: 'ma200-rejection',
+      status: ma200Below ? 'red' : 'none',
       value: ma200?.[ma200.length - 1].value.toFixed(0),
-      score: getStatus(ma200) === 'green' ? 10 : 0,
-      confluence: { passed: getStatus(ma200) === 'green' ? 1 : 0, total: 1 },
-      fetchedAt
-    },
-    { 
-      id: 'ma200-rejection', 
-      status: getStatus(ma200) === 'red' ? 'red' : 'none', 
-      value: ma200?.[ma200.length - 1].value.toFixed(0),
-      score: getStatus(ma200) === 'red' ? -10 : 0,
-      confluence: { passed: getStatus(ma200) === 'red' ? 1 : 0, total: 1 },
-      fetchedAt
+      score: ma200Below ? -10 : 0,
+      confluence: { passed: ma200Below ? 1 : 0, total: 1 },
+      fetchedAt,
     },
   ];
-
-  return signals;
 }
