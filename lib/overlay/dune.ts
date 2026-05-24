@@ -1,31 +1,53 @@
 /**
  * Fetches BTC ETF net flows from Dune Analytics.
  *
- * Default query ID 3430945 (hildobby's per-ETF flows) returns rows like:
- *   { time: '2026-05-23', issuer: 'BlackRock', etf_ticker: 'IBIT',
- *     amount_usd_net_flow: 123000000, ... }
+ * Tolerates several known schemas:
+ *   • hildobby per-ETF flows (deprecated, kept for backwards compat)
+ *       cols: time, issuer, etf_ticker, amount_usd_net_flow
+ *   • thechriscen per-transaction flows (active as of 2026-05)
+ *       cols: block_time, issuer, etf_ticker, usd_value, flow_type
+ *   • any custom forked query that returns
+ *       cols: time|day|date, net_flow_usd|amount_usd_net_flow|net_inflow_usd
  *
- * We aggregate per-date across all issuers to get daily net flow totals.
- *
- * If you fork the query and pre-aggregate yourself, your query can simply
- * return rows shaped { time, amount_usd_net_flow } (or net_flow_usd) and
- * this fetcher will still work.
+ * We aggregate per-day across all rows. For per-transaction schemas with a
+ * `flow_type` column, outflows are sign-flipped.
  */
 interface DuneRow {
   time?: string;
   day?: string;
   date?: string;
+  block_time?: string;
   amount_usd_net_flow?: number;
   net_flow_usd?: number;
   net_inflow_usd?: number;
+  usd_value?: number;
+  flow_type?: string;
 }
 
 function pickDate(row: DuneRow): string | undefined {
-  return row.time ?? row.day ?? row.date;
+  return row.time ?? row.day ?? row.date ?? row.block_time;
 }
 
-function pickUsd(row: DuneRow): number | undefined {
-  return row.amount_usd_net_flow ?? row.net_flow_usd ?? row.net_inflow_usd;
+function pickSignedUsd(row: DuneRow): number | undefined {
+  // Pre-aggregated net-flow columns take precedence (already signed)
+  const preSigned =
+    row.amount_usd_net_flow ?? row.net_flow_usd ?? row.net_inflow_usd;
+  if (typeof preSigned === 'number') return preSigned;
+
+  // Per-transaction column needs sign derived from flow_type
+  if (typeof row.usd_value === 'number') {
+    const ft = (row.flow_type ?? '').toLowerCase();
+    if (ft === 'outflow' || ft === 'withdrawal' || ft === 'redeem') {
+      return -Math.abs(row.usd_value);
+    }
+    if (ft === 'inflow' || ft === 'deposit' || ft === 'mint') {
+      return Math.abs(row.usd_value);
+    }
+    // No flow_type — assume value is already signed
+    return row.usd_value;
+  }
+
+  return undefined;
 }
 
 export async function fetchDuneEtfFlows() {
@@ -49,34 +71,31 @@ export async function fetchDuneEtfFlows() {
     const data = await response.json();
     const rows: DuneRow[] = data?.result?.rows ?? [];
     if (rows.length === 0) {
-      // Surface the actual `result` block so we can see column names / row count
-      const resultKeys = Object.keys(data?.result ?? {}).join(',');
-      const rowsType = Array.isArray(data?.result?.rows)
-        ? `array(len=${data.result.rows.length})`
-        : typeof data?.result?.rows;
-      const resultPreview = JSON.stringify(data?.result ?? null).slice(0, 1200);
+      const resultPreview = JSON.stringify(data?.result ?? null).slice(0, 800);
       return {
         status: 'unavailable',
-        error: `Dune no rows. resultKeys=[${resultKeys}] rowsType=${rowsType} result=${resultPreview}`,
+        error: `Dune no rows. result=${resultPreview}`,
       };
     }
 
-    // Aggregate per-day net flow across all issuers/ETFs
+    // Aggregate per-day net flow across all rows
     const byDay = new Map<string, number>();
     for (const row of rows) {
       const date = pickDate(row);
-      const usd = pickUsd(row);
+      const usd = pickSignedUsd(row);
       if (!date || typeof usd !== 'number') continue;
-      // Normalise to YYYY-MM-DD (strip any time portion)
       const dayKey = date.slice(0, 10);
       byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + usd);
     }
 
     if (byDay.size === 0) {
-      return { status: 'unavailable', error: 'Dune rows had no usable date/USD fields' };
+      const cols = data?.result?.metadata?.column_names?.join(',') ?? 'unknown';
+      return {
+        status: 'unavailable',
+        error: `Dune rows had no usable date/USD fields. Columns: [${cols}]`,
+      };
     }
 
-    // Sort days descending — latest first
     const sortedDays = [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
     const latestDayNetFlowUSD = sortedDays[0][1];
     const last3 = sortedDays.slice(0, 3).map(([, usd]) => usd);
