@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import useSWR from 'swr';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import SectionCard from '@/components/SectionCard';
 import ConfluencePanel from '@/components/ConfluencePanel';
@@ -150,8 +151,17 @@ export default function Home() {
               <blockquote className="text-xl font-serif italic text-zinc-500 max-w-2xl mx-auto leading-relaxed">
                 &ldquo;One signal is information. Multiple aligned signals create a trade setup.&rdquo;
               </blockquote>
+              <div className="mt-8">
+                <Link 
+                  href="/help" 
+                  className="text-xs font-bold text-zinc-400 hover:text-primary transition-colors flex items-center justify-center gap-2 group"
+                >
+                  Signal reference 
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
+              </div>
               <p className="mt-6 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-700">
-                BTC Analyst Dashboard • v1.7 • Global Confluence
+                BTC Analyst Dashboard • v1.8 • Global Confluence
               </p>
             </footer>
           </div>
