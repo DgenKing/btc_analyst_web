@@ -14,18 +14,25 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
   const scorecard = computeMasterScorecard(autoSignals);
   
   const getBiasColor = (bias: string) => {
+    if (bias.includes('Very Strong Bullish')) return 'text-green-400';
     if (bias.includes('Strong Bullish')) return 'text-green-500';
     if (bias.includes('Bullish Lean')) return 'text-green-400';
+    if (bias.includes('Very Strong Bearish')) return 'text-red-400';
     if (bias.includes('Strong Bearish')) return 'text-red-500';
     if (bias.includes('Bearish Lean')) return 'text-red-400';
     return 'text-zinc-500';
   };
 
-  const scorePercentage = ((scorecard.totalScore + 100) / 200) * 100;
+  // Bar position: 0% = far left (-100% confidence), 50% = centre (neutral),
+  // 100% = far right (+100% confidence). Maps -100..+100 to 0..100.
+  const barPosition = (scorecard.confidencePercent + 100) / 2;
+  const pctLabel = scorecard.confidencePercent > 0
+    ? `+${scorecard.confidencePercent}%`
+    : `${scorecard.confidencePercent}%`;
 
   return (
     <Card className="sticky top-20 border-primary/20 bg-card/80 backdrop-blur shadow-xl overflow-hidden">
-      <div className={`h-1.5 w-full ${scorecard.totalScore >= 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+      <div className={`h-1.5 w-full ${scorecard.confidencePercent >= 0 ? 'bg-green-500' : 'bg-red-500'}`} />
       <CardHeader className="pb-4">
         <CardTitle className="text-lg flex justify-between items-center">
           Market Bias
@@ -37,10 +44,15 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Total Score</span>
-            <span className={`text-3xl font-black ${scorecard.totalScore >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-              {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore}
+          <div className="flex items-end justify-between">
+            <div className="flex flex-col">
+              <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Conviction</span>
+              <span className="text-[10px] text-muted-foreground/60 mt-0.5">
+                Raw score: {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore} / ±{scorecard.maxPossibleScore}
+              </span>
+            </div>
+            <span className={`text-3xl font-black tabular-nums ${scorecard.confidencePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              {pctLabel}
             </span>
           </div>
           <div className="relative pt-7 pb-4">
@@ -54,26 +66,26 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
             <div className="pointer-events-none absolute left-1/2 top-12 -translate-x-1/2 text-[8px] uppercase font-bold tracking-widest text-zinc-500">
               0
             </div>
-            {/* Live score position marker with floating value badge */}
+            {/* Live confidence position marker with floating percent badge */}
             <div
               className="pointer-events-none absolute top-1 transition-all duration-500"
-              style={{ left: `${scorePercentage}%`, transform: 'translateX(-50%)' }}
+              style={{ left: `${barPosition}%`, transform: 'translateX(-50%)' }}
             >
               <div
                 className={`mx-auto w-fit rounded px-1.5 py-0.5 text-[9px] font-black tabular-nums shadow-md ${
-                  scorecard.totalScore >= 0
+                  scorecard.confidencePercent >= 0
                     ? 'bg-green-500 text-black'
                     : 'bg-red-500 text-white'
                 }`}
               >
-                {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore}
+                {pctLabel}
               </div>
               <div className="mx-auto mt-1 h-5 w-1 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
             </div>
           </div>
           <div className="flex justify-between text-[10px] uppercase font-bold text-muted-foreground/60">
-            <span>Strong Bearish (-100)</span>
-            <span>Strong Bullish (+100)</span>
+            <span>100% Bearish</span>
+            <span>100% Bullish</span>
           </div>
         </div>
 
