@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     // We use the full URL to ensure it works in both local and deployed environments
     const [snapshotResp, overlayResp, ticker] = await Promise.all([
       fetch(`${origin}/api/snapshot`, { cache: 'no-store' }),
-      fetch(`${origin}/api/_overlay`, { cache: 'no-store' }),
+      fetch(`${origin}/api/overlay-cached`, { cache: 'no-store' }),
       getCurrentFundingAndOI('BTCUSDT'),
     ]);
 

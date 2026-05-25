@@ -14,21 +14,21 @@ import { getOverlaySignals } from '@/lib/signals/overlay';
 
 export const revalidate = 60; // 60 seconds edge cache
 
-// Fetch overlay through the dedicated /api/_overlay route — it's cached at the
+// Fetch overlay through the dedicated /api/overlay-cached route — it's cached at the
 // Vercel edge layer with a 12h revalidate, so this fetch is served from CDN
 // even when /api/snapshot is hit hundreds of times per day. This is the only
 // thing that reliably enforces the upstream call budget across instances.
 async function getOverlayViaCachedRoute(request: Request) {
   try {
-    const overlayUrl = new URL('/api/_overlay', request.url);
+    const overlayUrl = new URL('/api/overlay-cached', request.url);
     const resp = await fetch(overlayUrl.toString(), {
       next: { revalidate: 43200 },
     });
     if (!resp.ok) {
       return {
-        etfFlows: { status: 'unavailable', error: `_overlay ${resp.status}` },
-        reserveRisk: { status: 'unavailable', error: `_overlay ${resp.status}` },
-        puellMultiple: { status: 'unavailable', error: `_overlay ${resp.status}` },
+        etfFlows: { status: 'unavailable', error: `overlay-cached ${resp.status}` },
+        reserveRisk: { status: 'unavailable', error: `overlay-cached ${resp.status}` },
+        puellMultiple: { status: 'unavailable', error: `overlay-cached ${resp.status}` },
       };
     }
     return await resp.json();
