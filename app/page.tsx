@@ -95,11 +95,11 @@ export default function Home() {
                   </div>
                   {isLoading && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
                 </div>
-                <div className="p-6 h-[400px] flex items-center justify-center bg-gradient-to-b from-transparent to-black/20">
+                <div className="px-1 py-3 sm:p-6 h-[300px] sm:h-[400px] bg-gradient-to-b from-transparent to-black/20">
                   {chartData.length > 0 ? (
                     <Chart data={chartData} />
                   ) : (
-                    <div className="flex flex-col items-center gap-3 text-zinc-600">
+                    <div className="flex h-full flex-col items-center justify-center gap-3 text-zinc-600">
                       <div className="h-10 w-10 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
                       <span className="text-[10px] font-black uppercase tracking-widest">Synchronizing Klines...</span>
                     </div>

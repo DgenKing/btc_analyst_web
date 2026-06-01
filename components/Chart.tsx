@@ -29,22 +29,33 @@ export default function Chart({
     if (!chartContainerRef.current) return;
 
     const handleResize = () => {
-      chartRef.current?.applyOptions({ width: chartContainerRef.current!.clientWidth });
+      if (!chartContainerRef.current) return;
+      chartRef.current?.applyOptions({
+        width: chartContainerRef.current.clientWidth,
+        height: chartContainerRef.current.clientHeight,
+      });
     };
 
     const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: backgroundColor },
         textColor,
+        fontSize: 11,
       },
       width: chartContainerRef.current.clientWidth,
-      height: 300,
+      height: chartContainerRef.current.clientHeight,
+      autoSize: true,
       grid: {
         vertLines: { color: 'rgba(197, 203, 206, 0.1)' },
         horzLines: { color: 'rgba(197, 203, 206, 0.1)' },
       },
       timeScale: {
         borderColor: 'rgba(197, 203, 206, 0.2)',
+        rightOffset: 4,
+      },
+      rightPriceScale: {
+        borderColor: 'rgba(197, 203, 206, 0.2)',
+        minimumWidth: 56,
       },
     });
     chartRef.current = chart;
@@ -76,5 +87,5 @@ export default function Chart({
     };
   }, [data, backgroundColor, textColor]);
 
-  return <div ref={chartContainerRef} className="w-full" />;
+  return <div ref={chartContainerRef} className="w-full h-full" />;
 }

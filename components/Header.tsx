@@ -41,15 +41,15 @@ export default function Header({ lastUpdated }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="container flex h-16 items-center justify-between gap-2 px-3 sm:px-6">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <Image
             src="/logo.jpg"
             alt="BTC Analyst"
             width={48}
             height={48}
             priority
-            className="h-12 w-12 rounded-lg object-cover"
+            className="h-9 w-9 sm:h-12 sm:w-12 rounded-lg object-cover shrink-0"
           />
           <div className="hidden sm:block">
             <h1 className="text-lg font-bold leading-none">BTC Analyst</h1>
@@ -59,27 +59,27 @@ export default function Header({ lastUpdated }: HeaderProps) {
           </div>
         </div>
         
-        <div className="flex items-center gap-4 sm:gap-8">
+        <div className="flex items-center gap-3 sm:gap-8 shrink-0">
           {lastUpdated && (
             <div className="hidden md:flex flex-col items-end">
               <span className="text-[10px] text-muted-foreground uppercase font-medium">Last Snapshot</span>
               <span className="text-xs font-mono">{new Date(lastUpdated).toLocaleTimeString()}</span>
             </div>
           )}
-          
+
           <div className="flex flex-col items-end">
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-mono font-bold tracking-tighter sm:tracking-normal">
+            <div className="flex items-baseline gap-1.5 sm:gap-2">
+              <span className="text-base sm:text-xl font-mono font-bold tracking-tight whitespace-nowrap">
                 {price ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : 'Loading...'}
               </span>
               {change !== 0 && (
-                <span className={`flex items-center text-xs sm:text-sm font-bold ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span className={`flex items-center text-[11px] sm:text-sm font-bold whitespace-nowrap ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {change >= 0 ? <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5" /> : <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 mr-0.5" />}
                   {Math.abs(change).toFixed(2)}%
                 </span>
               )}
             </div>
-            <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-medium">Hyperliquid Perp Live</span>
+            <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-medium whitespace-nowrap">Hyperliquid Perp Live</span>
           </div>
         </div>
       </div>
