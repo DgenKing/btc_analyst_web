@@ -86,7 +86,8 @@ export function computeVolumeProfile(klines: Kline[], bins: number = 40): Volume
 }
 
 export function getVolumeProfileSignals(klines: Kline[]): SignalState[] {
-  const profile = computeVolumeProfile(klines);
+  const VP_LOOKBACK_DAYS = 30;
+  const profile = computeVolumeProfile(klines.slice(-VP_LOOKBACK_DAYS));
   const fetchedAt = Date.now();
 
   if (!profile) {

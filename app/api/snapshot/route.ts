@@ -11,6 +11,7 @@ import { getVolumeProfileSignals } from '@/lib/signals/volumeProfile';
 import { getSetupSignals } from '@/lib/signals/setups';
 import { getEntryFilterSignals } from '@/lib/signals/entryFilters';
 import { getOverlaySignals } from '@/lib/signals/overlay';
+import { getTriggerSignals } from '@/lib/signals/triggers';
 
 export const revalidate = 60; // 60 seconds edge cache
 
@@ -44,10 +45,11 @@ async function getOverlayViaCachedRoute(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    const [klinesD, klinesW, klines4H, klines1H, perpTicker, overlayData] = await Promise.all([
+    const [klinesD, klinesW, klines4H, klines12H, klines1H, perpTicker, overlayData] = await Promise.all([
       getKlines('BTCUSDT', 'D', 200),
       getKlines('BTCUSDT', 'W', 200),
       getKlines('BTCUSDT', '240', 200),
+      getKlines('BTCUSDT', '720', 200),
       getKlines('BTCUSDT', '60', 200),
       getCurrentFundingAndOI('BTCUSDT'),
       getOverlayViaCachedRoute(request),
@@ -59,6 +61,7 @@ export async function GET(request: Request) {
     const srSignals = getSRSignals(klinesD);
     const rangeSignals = getRangeSignals(klinesD);
     const mtfSignals = getMultiTimeframeSignals(klinesD, klinesW);
+    const triggerSignals = getTriggerSignals(klines4H, klines12H);
     const volProfileSignals = getVolumeProfileSignals(klinesD);
     const setupSignals = getSetupSignals(klinesD, klines1H);
     const entryFilterSignals = getEntryFilterSignals(klinesD, klines1H);
@@ -72,6 +75,7 @@ export async function GET(request: Request) {
       ...srSignals,
       ...rangeSignals,
       ...mtfSignals,
+      ...triggerSignals,
       ...volProfileSignals,
       ...setupSignals,
       ...entryFilterSignals,
@@ -86,6 +90,7 @@ export async function GET(request: Request) {
         d: klinesD,
         w: klinesW,
         h4: klines4H,
+        h12: klines12H,
         h1: klines1H,
       },
       funding: {

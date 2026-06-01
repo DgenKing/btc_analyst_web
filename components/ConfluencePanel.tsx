@@ -48,7 +48,7 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
             <div className="flex flex-col">
               <span className="text-xs uppercase font-bold tracking-wider text-muted-foreground">Conviction</span>
               <span className="text-[10px] text-muted-foreground/60 mt-0.5">
-                Raw score: {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore} / ±{scorecard.maxPossibleScore}
+                Raw score: {scorecard.totalScore > 0 ? `+${scorecard.totalScore}` : scorecard.totalScore} / ±{scorecard.totalScore >= 0 ? scorecard.maxBullish : scorecard.maxBearish}
               </span>
             </div>
             <span className={`text-3xl font-black tabular-nums ${scorecard.confidencePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>

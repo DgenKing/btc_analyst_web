@@ -10,6 +10,8 @@ export interface Signal {
   weight: number;
   subCriteriaCount: number;
   sourceLabel?: string;
+  direction?: 'bull' | 'bear' | 'neutral';
+  exclusiveGroup?: string;
 }
 
 export interface SignalSection {
@@ -61,6 +63,7 @@ export interface MarketSnapshot {
     d: Kline[];
     w: Kline[];
     h4: Kline[];
+    h12: Kline[];
     h1: Kline[];
   };
   funding: {

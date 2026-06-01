@@ -9,9 +9,41 @@ export function computeSectionVerdict(
     .filter((s): s is SignalState => s !== undefined);
 
   const netScore = sectionStates.reduce((sum, s) => sum + (s.score ?? 0), 0);
-  const maxPossibleScore = section.signals.reduce((sum, s) => sum + (s.weight ?? 0), 0);
-  const confidencePercent = maxPossibleScore > 0
-    ? Math.round(Math.abs(netScore) / maxPossibleScore * 100)
+
+  // Compute per-direction max score for this section, accounting for exclusive groups
+  const exclusiveGroups = new Map<string, number[]>();
+  let bullMax = 0;
+  let bearMax = 0;
+
+  for (const signal of section.signals) {
+    const weight = signal.weight ?? 0;
+    const direction = signal.direction ?? signal.bias;
+    const group = signal.exclusiveGroup;
+
+    if (group) {
+      if (!exclusiveGroups.has(group)) {
+        exclusiveGroups.set(group, []);
+      }
+      exclusiveGroups.get(group)!.push(weight);
+    } else {
+      if (direction === 'bull' || direction === 'bullish') {
+        bullMax += weight;
+      } else if (direction === 'bear' || direction === 'bearish') {
+        bearMax += weight;
+      }
+    }
+  }
+
+  for (const weights of exclusiveGroups.values()) {
+    const maxInGroup = Math.max(...weights);
+    bullMax += maxInGroup;
+    bearMax += maxInGroup;
+  }
+
+  // Normalize by the appropriate direction's max
+  const denom = netScore >= 0 ? bullMax : bearMax;
+  const confidencePercent = denom > 0
+    ? Math.round(Math.abs(netScore) / denom * 100)
     : 0;
 
   const direction: SectionVerdict['direction'] =
@@ -28,7 +60,7 @@ export function computeSectionVerdict(
     direction,
     confidencePercent,
     netScore,
-    maxPossibleScore,
+    maxPossibleScore: netScore >= 0 ? bullMax : bearMax,
     activeCount,
     bullishActiveCount,
     bearishActiveCount,
