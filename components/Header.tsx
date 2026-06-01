@@ -13,18 +13,26 @@ export default function Header({ lastUpdated }: HeaderProps) {
   const [change, setChange] = useState<number>(0);
 
   useEffect(() => {
-    const ws = new WebSocket('wss://stream.bybit.com/v5/public/spot');
-    
+    // Live BTC perp price from Hyperliquid (mark price + 24h change vs prevDayPx).
+    const ws = new WebSocket('wss://api.hyperliquid.xyz/ws');
+
     ws.onopen = () => {
-      ws.send(JSON.stringify({ op: 'subscribe', args: ['tickers.BTCUSDT'] }));
+      ws.send(JSON.stringify({
+        method: 'subscribe',
+        subscription: { type: 'activeAssetCtx', coin: 'BTC' },
+      }));
     };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.topic === 'tickers.BTCUSDT') {
-        const ticker = data.data;
-        if (ticker.lastPrice) setPrice(parseFloat(ticker.lastPrice));
-        if (ticker.price24hPcnt) setChange(parseFloat(ticker.price24hPcnt) * 100);
+      if (data.channel === 'activeAssetCtx' && data.data?.coin === 'BTC') {
+        const ctx = data.data.ctx;
+        const mark = parseFloat(ctx.markPx);
+        const prevDay = parseFloat(ctx.prevDayPx);
+        if (!Number.isNaN(mark)) setPrice(mark);
+        if (!Number.isNaN(mark) && prevDay > 0) {
+          setChange(((mark - prevDay) / prevDay) * 100);
+        }
       }
     };
 
@@ -71,7 +79,7 @@ export default function Header({ lastUpdated }: HeaderProps) {
                 </span>
               )}
             </div>
-            <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-medium">Bybit Spot Live</span>
+            <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase font-medium">Hyperliquid Perp Live</span>
           </div>
         </div>
       </div>

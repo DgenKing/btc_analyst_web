@@ -10,40 +10,31 @@ export function computeSectionVerdict(
 
   const netScore = sectionStates.reduce((sum, s) => sum + (s.score ?? 0), 0);
 
-  // Compute per-direction max score for this section, accounting for exclusive groups
-  const exclusiveGroups = new Map<string, number[]>();
+  // Compute per-direction max score for this section.
+  // NOTE: exclusive groups are intentionally NOT collapsed here. Within a single
+  // section the directional signals are independent and can fire together
+  // (e.g. resistance-rejection + failure-reclaim + breakdown all at once), so the
+  // section denominator is simply the sum of weights on each side. The exclusive-
+  // group collapse only applies to the GLOBAL denominator in confluence.ts, where
+  // bull/bear location scenarios across the whole catalogue are mutually exclusive.
   let bullMax = 0;
   let bearMax = 0;
 
   for (const signal of section.signals) {
     const weight = signal.weight ?? 0;
     const direction = signal.direction ?? signal.bias;
-    const group = signal.exclusiveGroup;
 
-    if (group) {
-      if (!exclusiveGroups.has(group)) {
-        exclusiveGroups.set(group, []);
-      }
-      exclusiveGroups.get(group)!.push(weight);
-    } else {
-      if (direction === 'bull' || direction === 'bullish') {
-        bullMax += weight;
-      } else if (direction === 'bear' || direction === 'bearish') {
-        bearMax += weight;
-      }
+    if (direction === 'bull' || direction === 'bullish') {
+      bullMax += weight;
+    } else if (direction === 'bear' || direction === 'bearish') {
+      bearMax += weight;
     }
   }
 
-  for (const weights of exclusiveGroups.values()) {
-    const maxInGroup = Math.max(...weights);
-    bullMax += maxInGroup;
-    bearMax += maxInGroup;
-  }
-
-  // Normalize by the appropriate direction's max
+  // Normalize by the appropriate direction's max, clamped to 100%
   const denom = netScore >= 0 ? bullMax : bearMax;
   const confidencePercent = denom > 0
-    ? Math.round(Math.abs(netScore) / denom * 100)
+    ? Math.min(100, Math.round(Math.abs(netScore) / denom * 100))
     : 0;
 
   const direction: SectionVerdict['direction'] =

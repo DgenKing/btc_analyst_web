@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getKlines, getCurrentFundingAndOI } from '@/lib/bybit';
+import { getKlines, getPerpContext } from '@/lib/hyperliquid';
+import { getCurrentFundingAndOI } from '@/lib/bybit';
 import { getMASignals } from '@/lib/signals/movingAverages';
 import { getFundingSignals } from '@/lib/signals/funding';
 import { getStructureSignals } from '@/lib/signals/structure';
@@ -45,18 +46,32 @@ async function getOverlayViaCachedRoute(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    const [klinesD, klinesW, klines4H, klines12H, klines1H, perpTicker, overlayData] = await Promise.all([
-      getKlines('BTCUSDT', 'D', 200),
-      getKlines('BTCUSDT', 'W', 200),
-      getKlines('BTCUSDT', '240', 200),
-      getKlines('BTCUSDT', '720', 200),
-      getKlines('BTCUSDT', '60', 200),
+    // Price + klines come from Hyperliquid BTC perp (what the user actually trades).
+    // Funding/OI signal stays on Bybit linear — its thresholds are calibrated to
+    // Bybit's 8h funding rate, whereas Hyperliquid funding is hourly (~8x smaller).
+    const [klinesD, klinesW, klines4H, klines12H, klines1H, perpCtx, perpTicker, overlayData] = await Promise.all([
+      getKlines('BTC', 'D', 200),
+      getKlines('BTC', 'W', 200),
+      getKlines('BTC', '240', 200),
+      getKlines('BTC', '720', 200),
+      getKlines('BTC', '60', 200),
+      getPerpContext('BTC'),
       getCurrentFundingAndOI('BTCUSDT'),
       getOverlayViaCachedRoute(request),
     ]);
 
+    // Funding: compare Bybit vs Hyperliquid on a common 8h basis and use whichever
+    // venue's funding is larger in magnitude. Bybit's rate is already 8h; Hyperliquid
+    // is hourly, so multiply by 8 to make them comparable. The chosen 8h rate feeds
+    // getFundingSignals, whose threshold (0.0001) is calibrated to an 8h rate.
+    const bybitFunding8h = parseFloat(perpTicker.fundingRate);
+    const hlFunding8h = perpCtx.funding * 8;
+    const useHyperliquidFunding = Math.abs(hlFunding8h) > Math.abs(bybitFunding8h);
+    const chosenFunding8h = useHyperliquidFunding ? hlFunding8h : bybitFunding8h;
+    const fundingSource = useHyperliquidFunding ? 'Hyperliquid' : 'Bybit';
+
     const maSignals = getMASignals(klinesD);
-    const fundingSignals = getFundingSignals(perpTicker);
+    const fundingSignals = getFundingSignals({ fundingRate: String(chosenFunding8h) }, fundingSource);
     const structureSignals = getStructureSignals(klinesD);
     const srSignals = getSRSignals(klinesD);
     const rangeSignals = getRangeSignals(klinesD);
@@ -83,8 +98,8 @@ export async function GET(request: Request) {
     ];
 
     const snapshot = {
-      price: parseFloat(perpTicker.lastPrice),
-      priceChangePercent24h: parseFloat(perpTicker.price24hPcnt) * 100,
+      price: perpCtx.markPx,
+      priceChangePercent24h: perpCtx.change24hPercent,
       lastUpdated: new Date().toISOString(),
       klines: {
         d: klinesD,
@@ -94,7 +109,10 @@ export async function GET(request: Request) {
         h1: klines1H,
       },
       funding: {
-        current: parseFloat(perpTicker.fundingRate),
+        current: chosenFunding8h,
+        source: fundingSource,
+        bybit8h: bybitFunding8h,
+        hyperliquid8h: hlFunding8h,
       },
       openInterest: {
         current: parseFloat(perpTicker.openInterest),
