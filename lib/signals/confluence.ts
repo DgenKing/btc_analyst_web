@@ -1,5 +1,6 @@
 import { SignalState } from '@/types/signals';
 import { signalSections } from '@/data/signals';
+import { getRecommendation } from './recommendations';
 
 /**
  * Compute per-direction max scores, accounting for exclusive groups.
@@ -58,7 +59,6 @@ export function computeMasterScorecard(states: SignalState[]) {
   const denom = totalScore >= 0 ? bullMax : bearMax;
   const rawPct = denom > 0 ? (totalScore / denom) * 100 : 0;
   const confidencePercent = Math.max(-100, Math.min(100, Math.round(rawPct)));
-  const absPct = Math.abs(confidencePercent);
 
   // Thresholds: now ±10/±30/±55 are realistically reachable
   const bias = (() => {
@@ -71,16 +71,7 @@ export function computeMasterScorecard(states: SignalState[]) {
     return 'Neutral';
   })();
 
-  const action = (() => {
-    if (confidencePercent >= 45 && bullishActive >= 14)
-      return 'High-probability long — execute on confirmation';
-    if (confidencePercent >= 25) return 'Lean long — wait for entry trigger';
-    if (confidencePercent <= -45 && bearishActive >= 14)
-      return 'High-probability short — execute on confirmation';
-    if (confidencePercent <= -25) return 'Lean short — wait for entry trigger';
-    if (absPct < 10) return 'No trade — insufficient confluence';
-    return 'Watch — mixed signals';
-  })();
+  const action = getRecommendation(confidencePercent, totalScore);
 
   return {
     bias,
