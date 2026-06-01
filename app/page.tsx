@@ -64,6 +64,12 @@ export default function Home() {
         <div className="flex flex-col gap-8 lg:flex-row items-start">
           {/* Left Column: Signals & Content */}
           <div className="flex-1 space-y-8 w-full">
+            {/* Market Bias — mobile only, sits directly under the header/price.
+                On desktop (lg+) this is hidden and the sticky sidebar version is used instead. */}
+            <div className="lg:hidden">
+              <ConfluencePanel autoSignals={signalStates} />
+            </div>
+
             {/* Chart Section */}
             <Card className="overflow-hidden border-white/5 bg-zinc-900/40 backdrop-blur-xl shadow-2xl">
               <CardContent className="p-0">
@@ -166,8 +172,9 @@ export default function Home() {
             </footer>
           </div>
 
-          {/* Right Column: Scorecard & Actions */}
-          <div className="w-full lg:w-80 xl:w-96 shrink-0 lg:sticky lg:top-24">
+          {/* Right Column: Scorecard & Actions — desktop only (mobile renders it
+              at the top of the content column instead). */}
+          <div className="hidden lg:block lg:w-80 xl:w-96 shrink-0 lg:sticky lg:top-24">
             <ConfluencePanel autoSignals={signalStates} />
           </div>
         </div>

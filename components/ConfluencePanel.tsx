@@ -31,7 +31,7 @@ export default function ConfluencePanel({ autoSignals }: ConfluencePanelProps) {
     : `${scorecard.confidencePercent}%`;
 
   return (
-    <Card className="sticky top-20 border-primary/20 bg-card/80 backdrop-blur shadow-xl overflow-hidden">
+    <Card className="border-primary/20 bg-card/80 backdrop-blur shadow-xl overflow-hidden">
       <div className={`h-1.5 w-full ${scorecard.confidencePercent >= 0 ? 'bg-green-500' : 'bg-red-500'}`} />
       <CardHeader className="pb-4">
         <CardTitle className="text-lg flex justify-between items-center">
